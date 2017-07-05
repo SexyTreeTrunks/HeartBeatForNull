@@ -6,6 +6,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -18,6 +20,8 @@ import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
+import com.google.android.gms.maps.model.StreetViewPanoramaLink;
+import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
     private static final int PAN_BY = 50;//좌우사방팔방 각도, 0(북) 90(동) 180(남) 270(서)
@@ -29,7 +33,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int tilt;
 
     //
-    private TextView textView;
+    private Button button;
     //
 
     private SensorManager mSensorManager;
@@ -43,7 +47,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        textView = (TextView) findViewById(R.id.textView);
+        button = (Button) findViewById(R.id.buttonForward);
+        button.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StreetViewPanoramaLocation location = mStreetViewPanorama.getLocation();
+                StreetViewPanoramaCamera camera = mStreetViewPanorama.getPanoramaCamera();
+                if (location != null && location.links != null) {
+                    StreetViewPanoramaLink link = findClosestLinkToBearing(location.links, camera.bearing);
+                    mStreetViewPanorama.setPosition(link.panoId);
+                }
+            }
+        });
+
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         // SensorManager 를 이용해서 방향 센서 객체를 얻는다.
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
@@ -109,7 +125,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
             bearing = (int) event.values[0];
             tilt = (int) (-event.values[1] - 50);
-            textView.setText("bearing: "+bearing + "\ntilt: " + tilt);
             if(tilt > -90 && tilt < 90) {
                 streetViewPanoramaFragment.getStreetViewPanoramaAsync(
                         new OnStreetViewPanoramaReadyCallback() {
@@ -131,5 +146,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public static StreetViewPanoramaLink findClosestLinkToBearing(StreetViewPanoramaLink[] links,
+                                                                  float bearing) {
+        float minBearingDiff = 360;
+        StreetViewPanoramaLink closestLink = links[0];
+        for (StreetViewPanoramaLink link : links) {
+            if (minBearingDiff > findNormalizedDifference(bearing, link.bearing)) {
+                minBearingDiff = findNormalizedDifference(bearing, link.bearing);
+                closestLink = link;
+            }
+        }
+        return closestLink;
+    }
+
+    public static float findNormalizedDifference(float a, float b) {
+        float diff = a - b;
+        float normalizedDiff = diff - (float) (360 * Math.floor(diff / 360.0f));
+        return (normalizedDiff < 180.0f) ? normalizedDiff : 360.0f - normalizedDiff;
     }
 }
