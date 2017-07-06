@@ -4,10 +4,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,17 +26,26 @@ import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.android.gms.maps.model.StreetViewPanoramaLink;
 import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static android.os.SystemClock.sleep;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
     private static final int PAN_BY = 50;//좌우사방팔방 각도, 0(북) 90(동) 180(남) 270(서)
     private static final float ZOOM_BY = 0.5f;
     private static final int TILT_BY = 0;//각도, -90(위) ~ 90(아래) 값 가짐
-    private static final LatLng SAN_FRAN = new LatLng(37.765927, -122.449972);
+    //private static final LatLng SAN_FRAN = new LatLng(37.765927, -122.449972);
+    private static final LatLng SAN_FRAN = new LatLng(37.579131, 126.975827);
 
     private int bearing;
     private int tilt;
 
     //
     private Button button;
+    private Switch switch1;
+    private final Handler handler = new Handler();
+    private TimerTask timerTask;
     //
 
     private SensorManager mSensorManager;
@@ -48,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         button = (Button) findViewById(R.id.buttonForward);
+        switch1 = (Switch) findViewById(R.id.switch1);
         button.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +69,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (location != null && location.links != null) {
                     StreetViewPanoramaLink link = findClosestLinkToBearing(location.links, camera.bearing);
                     mStreetViewPanorama.setPosition(link.panoId);
+                }
+            }
+        });
+
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Timer timer = new Timer();
+                if(isChecked) {
+                    timerTask = new TimerTask() {
+                        @Override
+                        public void run() {
+                            walk();
+                        }
+                    };
+                    timer.schedule(timerTask, 0, 3000);
+                } else {
+                    timer.cancel();
+                    timerTask.cancel();
                 }
             }
         });
@@ -98,6 +130,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
+    }
+
+    protected void walk() {
+        Runnable updater = new Runnable() {
+            @Override
+            public void run() {
+                StreetViewPanoramaLocation location = mStreetViewPanorama.getLocation();
+                StreetViewPanoramaCamera camera = mStreetViewPanorama.getPanoramaCamera();
+                if (location != null && location.links != null) {
+                    StreetViewPanoramaLink link = findClosestLinkToBearing(location.links, camera.bearing);
+                    mStreetViewPanorama.setPosition(link.panoId);
+                }
+            }
+        };
+        handler.post(updater);
     }
 
 
