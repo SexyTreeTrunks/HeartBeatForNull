@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/editText_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="" />
+
+    <Button
+        android:id="@+id/button_select"
+        android:onClick = "onClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="출발지 선택" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="출발지: " />
+
+    <EditText
+        android:id="@+id/editText_endlocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="" />
+
+    <Button
+        android:id="@+id/button_endlocation"
+        android:onClick = "onClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="도착지 선택" />
+
+    <TextView
+        android:id="@+id/textView_endloc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="도착지: " />
+
+</LinearLayout>
