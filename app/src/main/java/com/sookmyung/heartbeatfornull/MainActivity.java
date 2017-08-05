@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.sookmyung.heartbeatfornull.searchpath.SelectLocationActivity;
+import com.sookmyung.heartbeatfornull.virtualtravel.Show2DMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    Intent intent = new Intent(MainActivity.this, VirtualTravel.class);
+                    Intent intent = new Intent(MainActivity.this, Show2DMap.class);
                     startActivity(intent);
                 } catch(Exception e) {
                     Log.e("MainActivity", e.toString());

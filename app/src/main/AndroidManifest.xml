@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".VirtualTravel"
+        <activity android:name=".virtualtravel.Show2DMap"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <activity android:name=".searchpath.SelectLocationActivity"
