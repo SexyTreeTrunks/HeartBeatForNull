@@ -73,19 +73,6 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
 
         SAN_FRAN = new LatLng(endlat, endlon);
 
-        //2017-07-27 yoon min 추가
-        switch(getNetworkType()){
-            case ConnectivityManager.TYPE_WIFI:
-                HttpMgrThread httpThread = new HttpMgrThread();
-                httpThread.start();
-                Toast.makeText(this, "WIFI에 연결되었습니다.", Toast.LENGTH_SHORT).show();
-                break;
-            case ConnectivityManager.TYPE_MOBILE:
-                Toast.makeText(this, "모바일 데이터에 연결되어있습니다. 연결상태를 확인해 주셍요.", Toast.LENGTH_SHORT).show();
-                break;
-            default: break;
-        }
-
         try {
             Log.e("***loc1", Double.toString(startlat));
             Log.e("***loc2", Double.toString(startlon));
