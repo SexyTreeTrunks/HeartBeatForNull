@@ -1,10 +1,10 @@
 package com.sookmyung.heartbeatfornull.virtualtravel;
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,9 +16,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sookmyung.heartbeatfornull.R;
-import com.sookmyung.heartbeatfornull.searchpath.SelectLocationActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,11 +26,14 @@ import java.util.List;
 public class Show2DMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    EditText editText_location_2d;
-    Button button_search;
+    private Marker mMarker;
+    private EditText editText_location_2d;
+    private Button button_search;
 
-    double lat;
-    double lon;
+    private double lat;
+    private double lon;
+    private LatLng markerLocation = sydney;
+    private static final LatLng sydney = new LatLng(-34, 151);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +65,8 @@ public class Show2DMap extends FragmentActivity implements OnMapReadyCallback {
                         Toast.makeText(Show2DMap.this, "해당 주소 없음", Toast.LENGTH_LONG).show();
                     } else {
                         Address addr = list.get(0);
-                        double lat = addr.getLatitude();
-                        double lon = addr.getLongitude();
+                        lat = addr.getLatitude();
+                        lon = addr.getLongitude();
 
                         String str_lat = String.format("%.6f",lat);
                         lat = Double.parseDouble(str_lat);
@@ -72,10 +75,10 @@ public class Show2DMap extends FragmentActivity implements OnMapReadyCallback {
                         lon = Double.parseDouble(str_lon);
 
                         Toast.makeText(Show2DMap.this, Double.toString(lat) + ", " + Double.toString(lon), Toast.LENGTH_LONG).show();
-                        LatLng searchedLocation = new LatLng(lat, lon);
+                        markerLocation = new LatLng(lat, lon);
                         mMap.clear();
-                        mMap.addMarker(new MarkerOptions().position(searchedLocation).title(str_location));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(searchedLocation));
+                        mMap.addMarker(new MarkerOptions().position(markerLocation).title(str_location));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(markerLocation));
                         mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
                     }
                 }
@@ -87,9 +90,31 @@ public class Show2DMap extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.addMarker(new MarkerOptions().position(markerLocation).title("로드뷰 보기 >"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(markerLocation));
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                markerLocation = latLng;
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(markerLocation).title("로드뷰보기 >"));
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                try {
+                    Intent intent = new Intent(Show2DMap.this, StreetViewInVirtualTravel.class);
+                    intent.putExtra("selectedLat", markerLocation.latitude);
+                    intent.putExtra("selectedLng", markerLocation.longitude);
+                    Log.e("markerWindow", "lat : " + markerLocation.latitude + "long : "+ markerLocation.longitude);
+                    startActivity(intent);
+                } catch(Exception e) {
+                    Log.e("Show2DMap", e.toString());
+                }
+            }
+        });
     }
 }
