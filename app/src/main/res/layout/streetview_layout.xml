@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
-        android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/streetviewpanoramaInVirtualTravel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        class="com.google.android.gms.maps.SupportStreetViewPanoramaFragment" />
 
-</LinearLayout>
+    <Switch
+        android:id="@+id/switchAuto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:text="자동화면전환" />
+
+    <Switch
+        android:id="@+id/switchWalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/switchAuto"
+        android:text="걷기" />
+
+</RelativeLayout>

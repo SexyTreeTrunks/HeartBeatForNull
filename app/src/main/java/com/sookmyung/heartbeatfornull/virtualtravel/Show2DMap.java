@@ -32,8 +32,8 @@ public class Show2DMap extends FragmentActivity implements OnMapReadyCallback {
 
     private double lat;
     private double lon;
-    private LatLng markerLocation = sydney;
-    private static final LatLng sydney = new LatLng(-34, 151);
+    private LatLng markerLocation = defaultLocation;
+    private static final LatLng defaultLocation = new LatLng(-14.359897, -170.751453);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,7 @@ public class Show2DMap extends FragmentActivity implements OnMapReadyCallback {
                         Toast.makeText(Show2DMap.this, Double.toString(lat) + ", " + Double.toString(lon), Toast.LENGTH_LONG).show();
                         markerLocation = new LatLng(lat, lon);
                         mMap.clear();
-                        mMap.addMarker(new MarkerOptions().position(markerLocation).title(str_location));
+                        mMap.addMarker(new MarkerOptions().position(markerLocation).title("로드뷰보기 >"));
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(markerLocation));
                         mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
                     }
