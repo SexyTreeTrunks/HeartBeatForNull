@@ -46,6 +46,9 @@
 
         <activity android:name=".Community"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity android:name=".virtualtravel.StreetViewInVirtualTravel"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
 </manifest>

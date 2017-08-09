@@ -8,61 +8,50 @@
     android:padding="2dp"
     tools:context="com.sookmyung.heartbeatfornull.MainActivity">
 
-    <RelativeLayout
+    <TableLayout
         android:layout_width="364dp"
         android:layout_height="547dp"
-        android:layout_margin="5dp"
-        android:background="@color/common_google_signin_btn_text_dark_focused" >
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <ImageButton
             android:id="@+id/imageButton1"
-            android:layout_width="180dp"
-            android:layout_height="280dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="@color/common_google_signin_btn_text_dark_focused"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/menu01" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            app:srcCompat="@drawable/m1"
+            tools:layout_editor_absoluteX="2dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <ImageButton
             android:id="@+id/imageButton2"
-            android:layout_width="180dp"
-            android:layout_height="280dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="@color/common_google_signin_btn_text_dark_focused"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/menu02" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            app:srcCompat="@drawable/m2"
+            tools:layout_editor_absoluteX="2dp"
+            tools:layout_editor_absoluteY="154dp" />
 
         <ImageButton
             android:id="@+id/imageButton3"
-            android:layout_width="180dp"
-            android:layout_height="280dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="@color/common_google_signin_btn_text_dark_focused"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/menu03" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            app:srcCompat="@drawable/m3"
+            tools:layout_editor_absoluteX="2dp"
+            tools:layout_editor_absoluteY="286dp" />
 
         <ImageButton
             android:id="@+id/imageButton4"
-            android:layout_width="180dp"
-            android:layout_height="280dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="@color/common_google_signin_btn_text_dark_focused"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/menu04" />
-    </RelativeLayout>
-
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            app:srcCompat="@drawable/m4"
+            tools:layout_editor_absoluteX="2dp"
+            tools:layout_editor_absoluteY="424dp" />
+    </TableLayout>
 </android.support.constraint.ConstraintLayout>
