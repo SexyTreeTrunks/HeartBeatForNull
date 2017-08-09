@@ -28,6 +28,9 @@ import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 import com.sookmyung.heartbeatfornull.R;
 
+import java.util.HashMap;
+import java.util.List;
+
 import static com.sookmyung.heartbeatfornull.R.id.map;
 
 public class ResultMapFromSearch extends AppCompatActivity implements SensorEventListener, GoogleMap.OnMarkerDragListener, StreetViewPanorama.OnStreetViewPanoramaChangeListener {
@@ -57,6 +60,8 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
     private Marker mMarker;
     private static final String MARKER_POSITION_KEY = "MarkerPosition";
 
+    private HttpRequestAsyncTask httpRequestAsyncTask;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +84,24 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
             Log.e("***loc3", Double.toString(endlat));
             Log.e("***loc4", Double.toString(endlon));
 
-            new HttpRequestAsyncTask().execute(startlat, startlon, endlat, endlon);
+            httpRequestAsyncTask = new HttpRequestAsyncTask(){
+                //doinbackground함수가 다 실행되고 자동으로 실행되는 함수임!
+                @Override
+                protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+
+                    for (int i = 0; i < result.size(); i++) {
+
+                        List<HashMap<String, String>> path = result.get(i);
+
+                        for (int j = 0; j < path.size(); j++) {
+                            HashMap<String, String> point = path.get(j);
+
+                            Log.d("///onPostExecute","latlng: " + point.get("lat") + "," + point.get("lng"));
+                        }
+                    }
+                }
+            };
+            httpRequestAsyncTask.execute(startlat, startlon, endlat, endlon);
         }
         catch(Exception e){
             Log.e("***AsynchTask오류","mapactivity85");
