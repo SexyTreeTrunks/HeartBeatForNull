@@ -2,6 +2,7 @@ package com.sookmyung.heartbeatfornull.searchpath;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -24,10 +25,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 import com.sookmyung.heartbeatfornull.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,10 +60,11 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
     private StreetViewPanoramaCamera camera;
     private GoogleMap mMap;
 
-    private Marker mMarker;
-    private static final String MARKER_POSITION_KEY = "MarkerPosition";
+    //private Marker mMarker;
+    //private static final String MARKER_POSITION_KEY = "MarkerPosition";
 
     private HttpRequestAsyncTask httpRequestAsyncTask;
+    private List<List<HashMap<String, String>>> wayPointsList;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -88,17 +92,10 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
                 //doinbackground함수가 다 실행되고 자동으로 실행되는 함수임!
                 @Override
                 protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-
-                    for (int i = 0; i < result.size(); i++) {
-
-                        List<HashMap<String, String>> path = result.get(i);
-
-                        for (int j = 0; j < path.size(); j++) {
-                            HashMap<String, String> point = path.get(j);
-
-                            Log.d("///onPostExecute","latlng: " + point.get("lat") + "," + point.get("lng"));
-                        }
-                    }
+                    //경로정보 전역변수에 저장
+                    wayPointsList = result;
+                    //2d지도에 폴리라인 그리깅
+                    set2dMapView();
                 }
             };
             httpRequestAsyncTask.execute(startlat, startlon, endlat, endlon);
@@ -107,19 +104,13 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
             Log.e("***AsynchTask오류","mapactivity85");
         }
 
-        final LatLng markerPosition;
-        if (savedInstanceState == null) {
-            markerPosition = SAN_FRAN;
-        } else {
-            markerPosition = savedInstanceState.getParcelable(MARKER_POSITION_KEY);
-        }
-
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         // SensorManager 를 이용해서 방향 센서 객체를 얻는다.
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         //SensorManager.getOrientation()
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
+        //3D map
         streetViewPanoramaFragment =
                 (SupportStreetViewPanoramaFragment)
                         getSupportFragmentManager().findFragmentById(R.id.streetviewpanorama);
@@ -149,6 +140,10 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
                     }
                 });
 
+    }
+
+    private void set2dMapView() {
+        //2D map setting
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -157,16 +152,60 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
                 googleMap.setOnMarkerDragListener(ResultMapFromSearch.this);
                 // Creates a draggable marker. Long press to drag.
                 googleMap.moveCamera((CameraUpdateFactory.newLatLng(SAN_FRAN)));
-                mMarker = googleMap.addMarker(new MarkerOptions()
-                        .position(markerPosition)
-                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
-                        .draggable(true));
+
+                mMap = googleMap;
+
+                drawMarkerOn2dMap();
+                drawPathLineOn2dMap();
             }
         });
-
     }
 
+    private void drawMarkerOn2dMap() {
+        //시작, 출발점 마커를 그려용
+        MarkerOptions markerOptions = new MarkerOptions();
+        LatLng startLatLng = new LatLng(startlat,startlon);
+        markerOptions.position(startLatLng);
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+        mMap.addMarker(markerOptions);
 
+        markerOptions = new MarkerOptions();
+        LatLng endLatLng = new LatLng(endlat, endlon);
+        markerOptions.position(endLatLng);
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+        mMap.addMarker(markerOptions);
+    }
+
+    private void drawPathLineOn2dMap() {
+        ArrayList points = null;
+        PolylineOptions lineOptions = null;
+        MarkerOptions markerOptions = new MarkerOptions();
+
+        for (int i = 0; i < wayPointsList.size(); i++) {
+            points = new ArrayList();
+            lineOptions = new PolylineOptions();
+
+            List<HashMap<String, String>> path = wayPointsList.get(i);
+
+            for (int j = 0; j < path.size(); j++) {
+                HashMap<String, String> point = path.get(j);
+
+                double lat = Double.parseDouble(point.get("lat"));
+                double lng = Double.parseDouble(point.get("lng"));
+                LatLng position = new LatLng(lat, lng);
+
+                points.add(position);
+            }
+
+            lineOptions.addAll(points);
+            lineOptions.width(12);
+            lineOptions.color(Color.RED);
+            lineOptions.geodesic(true);
+        }
+
+        // Drawing polyline in the Google Map for the i-th route
+        mMap.addPolyline(lineOptions);
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -215,7 +254,7 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(MARKER_POSITION_KEY, mMarker.getPosition());
+        //outState.putParcelable(MARKER_POSITION_KEY, mMarker.getPosition());
     }
     @Override
     public void onMarkerDragStart(Marker marker) {

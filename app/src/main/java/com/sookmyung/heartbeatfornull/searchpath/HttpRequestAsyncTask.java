@@ -84,7 +84,7 @@ public class HttpRequestAsyncTask extends AsyncTask<Double, String, List<List<Ha
                 while ((stream = br.readLine()) != null) {
                     //testStr += br.readLine();
                     sb.append(stream);
-                    Log.i("***stream", stream);
+                    //Log.i("***stream", stream);
                 }
                 br.close();
 
@@ -92,11 +92,6 @@ public class HttpRequestAsyncTask extends AsyncTask<Double, String, List<List<Ha
                 //json파싱&위도경도 데이터 추출하여 list에 저장
                 JSONObject jObject = new JSONObject(streamStr);
                 routes = parse(jObject);
-
-                //  2017-08-07 json에서 overview polyline 추출해서 decodePoly
-                //List<LatLng> str = decodePoly("mfidFiepdWD?CySFcET}Gj@mJ~@mLhAkLbAyIdA{Kt@qMTeHCaFIcAUsA_VgbAyCcMyDiSm@_FMyB@}BViCjAiGxDiJdFgIrCoE|CkEfGmHjEqEbL{KbEaFrB}CzAiCrAkCfAgCbBsElBwGj@wCrAqIf@aEl@uGn@eMb@mMFaDLoIJcMHaFXgG~Bid@CgCK}@[mAm@yAyIsQcRcb@aDuH{BsEuBeDoAaB{@y@eCkBwDoBcHcCu[kLkFeCuCqB_a@w]k`@o]oOgNmH{JeDyGgFqWUeHKuEDuF`@wJlAsJhIu\\lFwSnBiI~DqOhCaLbCeLt@mC|@kCvAsDrAgCx@aAdG{FjFiEdB}BrB}CtAuCv@{BzAwDjEaKPa@pDoGdTi^|KmRhCaFzIoQhHuOv@kBv@eCdGgT|C_KzF_Qp@_Cb@w@|B_C~c@o\\rHqFbBkBxAuBn@aAbBsDvC}HpBqEjBaD~HeMrHwL`GqIdA_AjJuGpBkBvAoBt@{Aj@wAdA}DzBaLbA{Dh@aBbN{`@bByEzF}OjA_Dh@iAlAwBv@_Br@iCxCuRjEkXHkA?s@KgA[wAYw@m@eAiOiRcByBWKs@EyJ?gHFsH`@ae@lDcB?c@L{EiF");
-                //Log.i("***str:",str.toString());
-
 
             } else {
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
