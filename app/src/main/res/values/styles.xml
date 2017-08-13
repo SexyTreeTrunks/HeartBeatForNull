@@ -8,4 +8,25 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Widget.HeartBeatForNull.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="contentInsetStart">12dp</item>
+        <item name="titleTextAppearance">@style/TextAppearance.HeartBeatForNull.Logo</item>
+    </style>
+
+    <style name="Widget.HeartBeatForNull.CollapsingToolbar" parent="">
+        <item name="collapsedTitleTextAppearance">@style/TextAppearance.HeartBeatForNull.Logo</item>
+        <item name="contentScrim">?attr/colorPrimary</item>
+        <item name="expandedTitleGravity">top</item>
+        <item name="expandedTitleMarginStart">124dp</item>
+        <item name="expandedTitleMarginTop">140dp</item>
+        <item name="expandedTitleTextAppearance">@style/TextAppearance.HeartBeatForNull.Logo</item>
+        <item name="scrimVisibleHeightTrigger">140dp</item>
+    </style>
+
+    <style name="TextAppearance.HeartBeatForNull.Logo" parent="TextAppearance.AppCompat.Display3">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
