@@ -52,6 +52,9 @@
 
         <activity android:name=".virtualtravel.StreetViewInVirtualTravel"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity android:name=".searchpath.PlacePredictionActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
 </manifest>

@@ -44,6 +44,19 @@ public class SelectLocationActivity extends Activity{
 
         final Geocoder geocoder = new Geocoder(this);
 
+        editText_location.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (editText_location.length() >= 0) {
+                    editText_location.setText(null);
+                    Intent intent = new Intent(SelectLocationActivity.this, PlacePredictionActivity.class);
+                    startActivity(intent);
+                    Log.i("***intent",editText_location.toString());
+                }
+
+                Log.i("***","intent");
+            }
+        });
+
         button_select.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 List<Address> list = null;

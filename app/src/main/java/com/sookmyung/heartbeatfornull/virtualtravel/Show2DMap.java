@@ -59,7 +59,7 @@ public class Show2DMap extends FragmentActivity implements OnMapReadyCallback {
         //추천 리스트 불러와서 RecyclerView에 설정
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.suggest_list);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         adapter = new ProductAdapter(suggestLists, imageRequester);
         recyclerView.setAdapter(adapter);
 
