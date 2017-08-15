@@ -115,7 +115,7 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
         endlat = map_intent.getDoubleExtra("endlat",37.635956);
         endlon = map_intent.getDoubleExtra("endlon",126.704334);
 
-        SAN_FRAN = new LatLng(endlat, endlon);
+        SAN_FRAN = new LatLng(startlat, startlon);
 
         try {
             Log.e("***loc1", Double.toString(startlat));

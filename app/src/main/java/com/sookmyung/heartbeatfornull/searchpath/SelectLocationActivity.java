@@ -17,6 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -206,13 +207,13 @@ public class SelectLocationActivity extends AppCompatActivity implements GoogleM
         MarkerOptions markerOptions = new MarkerOptions();
         LatLng startLatLng = new LatLng(slat,slon);
         markerOptions.position(startLatLng);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_mark));
         mMap.addMarker(markerOptions);
 
         markerOptions = new MarkerOptions();
         LatLng endLatLng = new LatLng(elat, elon);
         markerOptions.position(endLatLng);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_mark));
         mMap.addMarker(markerOptions);
     }
 
