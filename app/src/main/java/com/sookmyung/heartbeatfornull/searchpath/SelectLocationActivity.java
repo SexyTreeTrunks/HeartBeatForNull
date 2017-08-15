@@ -73,12 +73,12 @@ public class SelectLocationActivity extends AppCompatActivity implements GoogleM
             }
         });
 
-        /*button_endlocation.setOnClickListener(new View.OnClickListener(){
+        button_endlocation.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 Intent intent = new Intent(SelectLocationActivity.this, ResultMapFromSearch.class);
                 startActivityForResult(intent, 2);
             }
-        });*/
+        });
     }
 
     @Override

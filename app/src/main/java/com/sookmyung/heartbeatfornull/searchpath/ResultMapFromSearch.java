@@ -10,8 +10,11 @@ import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,14 +36,16 @@ import com.sookmyung.heartbeatfornull.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.sookmyung.heartbeatfornull.R.id.map;
 
 public class ResultMapFromSearch extends AppCompatActivity implements SensorEventListener, GoogleMap.OnMarkerDragListener, StreetViewPanorama.OnStreetViewPanoramaChangeListener {
 
-    private static final int PAN_BY = 50;//좌우사방팔방 각도, 0(북) 90(동) 180(남) 270(서)
+    private static final int PAN_BY = 50; //좌우사방팔방 각도, 0(북) 90(동) 180(남) 270(서)
     private static final float ZOOM_BY = 0.5f;
-    private static final int TILT_BY = 0;//각도, -90(위) ~ 90(아래) 값 가짐
+    private static final int TILT_BY = 0; //각도, -90(위) ~ 90(아래) 값 가짐
 
     double startlat =0;
     double startlon=0;
@@ -53,6 +58,10 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
     private int bearing;
     private int tilt;
 
+    private Switch switchWalk;
+    private final Handler handler = new Handler();
+    private TimerTask timerTask;
+
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private SupportStreetViewPanoramaFragment streetViewPanoramaFragment;
@@ -60,17 +69,43 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
     private StreetViewPanoramaCamera camera;
     private GoogleMap mMap;
 
-    //private Marker mMarker;
-    //private static final String MARKER_POSITION_KEY = "MarkerPosition";
-
     private HttpRequestAsyncTask httpRequestAsyncTask;
     private List<List<HashMap<String, String>>> wayPointsList;
+    //
+    LatLng postion;
+    int i = 0, j = 0;
+    boolean isEndOfPath = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_path_layout);
         Intent map_intent = getIntent();
+
+        switchWalk = (Switch) findViewById(R.id.switchPathWalk);
+        switchWalk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Timer timer = new Timer();
+                if(isChecked) {
+                    timerTask = new TimerTask() {
+                        @Override
+                        public void run() {
+                            walk();
+                        }
+                    };
+                    timer.schedule(timerTask, 0, 3000);
+                    if(isEndOfPath) {
+                        timer.cancel();
+                        timerTask.cancel();
+                        isEndOfPath = false;
+                    }
+                } else {
+                    timer.cancel();
+                    timerTask.cancel();
+                }
+            }
+        });
 
         //임시 춟발지: 숙명여자대학교
         startlat = map_intent.getDoubleExtra("startlat", 37.545062);
@@ -95,7 +130,7 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
                     //경로정보 전역변수에 저장
                     wayPointsList = result;
                     //2d지도에 폴리라인 그리깅
-                    set2dMapView();
+                    //set2dMapView();
                 }
             };
             httpRequestAsyncTask.execute(startlat, startlon, endlat, endlon);
@@ -114,6 +149,7 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
         streetViewPanoramaFragment =
                 (SupportStreetViewPanoramaFragment)
                         getSupportFragmentManager().findFragmentById(R.id.streetviewpanorama);
+
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(
                 new OnStreetViewPanoramaReadyCallback() {
                     @Override
@@ -139,9 +175,57 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
                         }
                     }
                 });
-
     }
 
+    protected void walk() {
+        Log.d("****walk","걸어용");
+        Runnable updater = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    /*for (int i = 0; i < wayPointsList.size(); i++) {
+
+                        List<HashMap<String, String>> path = wayPointsList.get(i);
+
+                        for (int j = 0; j < path.size(); j++) {
+                            HashMap<String, String> point = path.get(j);
+
+                            double lat = Double.parseDouble(point.get("lat"));
+                            double lng = Double.parseDouble(point.get("lng"));
+                            postion = new LatLng(lat, lng);
+                            mStreetViewPanorama.setPosition(postion);
+                            Log.d("****walk",postion.toString());
+                        }
+                    }*/
+
+                    List<HashMap<String, String>> path = wayPointsList.get(i);
+
+                    //=======
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    postion = new LatLng(lat, lng);
+                    mStreetViewPanorama.setPosition(postion);
+                    Log.d("****walk",postion.toString());
+                    j++;
+                    if(j == path.size()) {
+                        j = 0;
+                        i++;
+                    }
+
+                    if(i == wayPointsList.size()) {
+                        i = 0;
+                        isEndOfPath = true;
+                    }
+                } catch (Exception e) {
+                    Log.d("StreetViewVT","walkError=" + e);
+                }
+            }
+        };
+        handler.post(updater);
+    }
+/*
     private void set2dMapView() {
         //2D map setting
         SupportMapFragment mapFragment =
@@ -179,7 +263,6 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
     private void drawPathLineOn2dMap() {
         ArrayList points = null;
         PolylineOptions lineOptions = null;
-        MarkerOptions markerOptions = new MarkerOptions();
 
         for (int i = 0; i < wayPointsList.size(); i++) {
             points = new ArrayList();
@@ -202,10 +285,11 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
             lineOptions.color(Color.RED);
             lineOptions.geodesic(true);
         }
-
         // Drawing polyline in the Google Map for the i-th route
         mMap.addPolyline(lineOptions);
     }
+    */
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -277,11 +361,5 @@ public class ResultMapFromSearch extends AppCompatActivity implements SensorEven
 
     }
 
-    private int getNetworkType(){
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-        return activeNetwork.getType();
-    }
 
 }
