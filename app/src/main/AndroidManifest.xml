@@ -44,9 +44,6 @@
         <activity android:name=".searchpath.ResultMapFromSearch"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
-        <activity android:name=".Footprint"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
         <activity android:name=".Community"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
@@ -55,6 +52,16 @@
 
         <activity android:name=".searchpath.PlacePredictionActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity android:name=".footprint.ShowFootprintMap"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity android:name=".footprint.Footprint"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+        <activity android:name=".footprint.ShowFootprintList"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
+
 
 </manifest>
