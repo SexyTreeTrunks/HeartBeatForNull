@@ -188,7 +188,7 @@ public class SelectLocationActivity extends AppCompatActivity implements GoogleM
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                ROUTE = new LatLng(elat, elon);
+                ROUTE = new LatLng(slat, slon);
                 googleMap.setOnMarkerDragListener(SelectLocationActivity.this);
                 // Creates a draggable marker. Long press to drag.
                 googleMap.moveCamera((CameraUpdateFactory.newLatLng(ROUTE)));

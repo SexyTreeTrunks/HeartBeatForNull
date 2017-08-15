@@ -40,10 +40,10 @@ import static com.sookmyung.heartbeatfornull.R.id.map;
 public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCallback, DownloadFootprintActivity.Listener {
 
     private GoogleMap mMap;
-    EditText editText_location_2d;
+   // EditText editText_location_2d;
     Button button_search;
-    Button button_leave_fp;
-    Button button_get_fp;
+   // Button button_leave_fp;
+    //Button button_get_fp;
     Button button_getGPS_fp;
 
     private Location lastKnownLocation;
@@ -62,11 +62,11 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_footprint_map);
 
-        editText_location_2d = (EditText) findViewById(R.id.editText_location_2d);
-        button_search = (Button) findViewById(R.id.button_search_fp);
+        //editText_location_2d = (EditText) findViewById(R.id.editText_location_2d);
+        //button_search = (Button) findViewById(R.id.button_search_fp);
         button_getGPS_fp = (Button) findViewById(R.id.button_getGPS_fp);
-        button_leave_fp = (Button) findViewById(R.id.button_leave_fp);
-        button_get_fp = (Button) findViewById(R.id.button_get_fp);
+        //button_leave_fp = (Button) findViewById(R.id.button_leave_fp);
+        //button_get_fp = (Button) findViewById(R.id.button_get_fp);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(map);
         mapFragment.getMapAsync(this);
         // checkLocationPermission();
@@ -75,7 +75,7 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
         final Geocoder geocoder = new Geocoder(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         lastKnownLocation = null;
-
+        /*
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +114,7 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
                     }
                 }
             }
-        });
+        });*/
 
         button_getGPS_fp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +123,7 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
             }
         });
 
-
+        /*
         button_leave_fp.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -144,7 +144,7 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
                 //DownloadFootprintActivity task = new DownloadFootprintActivity();
                 //  downloadFootprintActivity.execute(Double.toString(lat), Double.toString(lon));
             }
-        });
+        }); */
     }
 
     @Override
@@ -156,7 +156,7 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    private Location getGPSLocation() {
+   /* private Location getGPSLocation() {
         Location currentLocation = null;
 
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
@@ -189,7 +189,7 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
         }else {
             return currentLocation;
         }
-    }
+    }*/
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -359,15 +359,28 @@ public class ShowFootprintMap extends FragmentActivity implements OnMapReadyCall
 
         try {
             Log.e("GPS in", "GPS in~~~~~~~~~");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mLocationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
-            lastKnownLocation = getGPSLocation();
+            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mLocationListener);
+            //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
+            //lastKnownLocation = getGPSLocation();
 
             mMap.clear();
-            LatLng currentLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+            //LatLng currentLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+            LatLng currentLocation = new LatLng(37.546425,126.962532);
             mMap.addMarker(new MarkerOptions().position(currentLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title("현재위치"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(17), 2000, null);
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    try {
+                        Intent intent = new Intent(ShowFootprintMap.this, Footprint.class);
+
+                        startActivity(intent);
+                    } catch(Exception e) {
+                        Log.e("ShowFootprintMap", e.toString());
+                    }
+                }
+            });
 
         } catch (SecurityException e) {
 

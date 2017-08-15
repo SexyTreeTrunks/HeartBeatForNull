@@ -14,20 +14,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editText_location_2d"
-                android:layout_width="305dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="" />
 
-            <Button
-                android:id="@+id/button_search_fp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="검색" />
+
         </LinearLayout>
 
         <Button
@@ -36,17 +24,6 @@
             android:layout_height="wrap_content"
             android:text="GPS" />
 
-        <Button
-            android:id="@+id/button_leave_fp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="footprint" />
-
-        <Button
-            android:id="@+id/button_get_fp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="get footprint" />
 
     </LinearLayout>
 
